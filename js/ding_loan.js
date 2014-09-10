@@ -19,8 +19,7 @@
       var checkboxes = $('input[type=checkbox]', $(this).closest('.select-all').nextUntil('.select-all'));
       if ($(this).prop('checked')) {
         // Only checkboxes that are enabled.
-        checkboxes.each(function(i) {
-          var box = $(checkboxes[i]);
+        checkboxes.each(function(i, box) {
           if (!box.is(':disabled')) {
             box.prop('checked', true);
             box.change();
@@ -49,28 +48,16 @@
       $.merge(checkboxes, $('input[type=checkbox]', item.nextUntil('.select-all'))).not(':disabled');
       $.merge(checkboxes, $('input[type=checkbox]', item)).not(':disabled');
 
-      // Find all checked checkboxes found above and count theme
-      var checked = 0;
-      checkboxes.each(function(index) {
-        var checkbox = $(checkboxes[index]);
-        if (checkbox.is(':checked')) {
-          checked++;
-        }
-      });
+      // Find all checked checkboxes found above and count theme.
+      var checked = checkboxes.find(':checked').size();
 
       // Change the select all based on the count found above.
-      if (checked !== checkboxes.length) {
-        item.prevAll('.select-all').find('input[type=checkbox]:not(:disabled)').prop('checked', false);
-      }
-      else {
-        item.prevAll('.select-all').find('input[type=checkbox]:not(:disabled)').prop('checked', true);
-      }
+      item.prevAll('.select-all').find('input[type=checkbox]:not(:disabled)').prop('checked', checked === checkboxes.length);
     });
 
     // Update count string on the buttons.
     function update_buttons(buttons, count) {
-     buttons.each(function(index) {
-       var btn = $(buttons[index]);
+     buttons.each(function(index, btn) {
        btn.val(btn.val().replace(/\(\d+\)/, '(' + count + ')'));
 
        // Toggle buttons based on count.
